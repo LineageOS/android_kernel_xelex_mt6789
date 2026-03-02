@@ -1144,6 +1144,15 @@ static int synaptics_rmi4_f12_abs_report(struct synaptics_rmi4_data *rmi4_data,
 	}
 
 	/*
+	 * Release any finger slots above fingers_to_process to remove stuck touches
+	 */
+	for (finger = fingers_to_process; finger < rmi4_data->num_of_fingers; finger++) {
+		reset_finger_filter(&rmi4_data->finger_filter[finger]);
+		input_mt_slot(rmi4_data->input_dev, finger);
+		input_mt_report_slot_state(rmi4_data->input_dev, MT_TOOL_FINGER, 0);
+	}
+
+	/*
 	 * Report BTN_TOUCH state and sync once for the whole batch to group events into single frame
 	 */
 	if (touch_count > 0) {
