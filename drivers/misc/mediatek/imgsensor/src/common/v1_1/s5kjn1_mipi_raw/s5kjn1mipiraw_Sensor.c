@@ -2794,7 +2794,7 @@ static void sensor_init(void)
 }	/*	sensor_init  */
 
 /* Pll Setting - VCO = 280Mhz*/
-static void capture_setting()
+static void capture_setting(void)
 {
     LOG_INF("start\n");
     // Antaiui <AI_BSP_CAM> <xieht> <2021-06-04> add check streaming off begin
