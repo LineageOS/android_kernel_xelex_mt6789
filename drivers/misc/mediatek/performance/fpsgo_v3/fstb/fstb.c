@@ -107,13 +107,13 @@ static DEFINE_MUTEX(fstb_cam_active_time);
 static struct rb_root video_pid_tree;
 static DEFINE_MUTEX(fstb_video_pid_tree_lock);
 
-static set_cam_active_fpsgo_off;
+static int set_cam_active_fpsgo_off;
 static DEFINE_MUTEX(fstb_set_cam_active_fpsgo_off_lock);
 
 
 void (*gbe_fstb2gbe_poll_fp)(struct hlist_head *list);
 
-static void enable_fstb_timer(void)
+static void  enable_fstb_timer(void)
 {
 	ktime_t ktime;
 
