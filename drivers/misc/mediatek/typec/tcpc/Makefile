@@ -1,4 +1,4 @@
-subdir-ccflags-y += -Wall -Werror
+subdir-ccflags-y += -Wall -Werror -Wno-unused-but-set-variable
 subdir-ccflags-y += -I$(srctree)/drivers/power/supply/
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/rt-regmap/
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include
