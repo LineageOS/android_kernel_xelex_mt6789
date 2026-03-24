@@ -321,7 +321,8 @@ dtc-option = $1
 endif
 
 DTC ?= $(objtree)/scripts/dtc/dtc
-DTC_FLAGS += $(call dtc-option,-Wno-interrupt_provider)
+DTC_FLAGS += $(call dtc-option,-Wno-interrupt_provider) \
+             -q
 
 # Disable noisy checks by default
 ifeq ($(findstring 1,$(KBUILD_EXTRA_WARN)),)
