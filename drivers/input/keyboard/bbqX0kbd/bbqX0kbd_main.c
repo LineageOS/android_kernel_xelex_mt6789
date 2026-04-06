@@ -136,11 +136,23 @@ static uint8_t bbqX0kbd_modkeys_to_bits(unsigned short mod_keycode)
 	return returnValue;
 }
 
+static void bbqX0kbd_inject_shift()
+{
+	if (g_bbqX0kbd_data) {
+		input_report_key(g_bbqX0kbd_data->input_dev, KEY_LEFTSHIFT, 1);
+		input_report_key(g_bbqX0kbd_data->input_dev, KEY_LEFTSHIFT, 0);
+	}
+}
+
 static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
 {
 	unsigned short returnValue;
 
 	switch (keycode) {
+	case KEY_Q:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_3;
+		break;
 	case KEY_W:
 		returnValue = KEY_1;
 		break;
@@ -149,6 +161,33 @@ static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
 		break;
 	case KEY_R:
 		returnValue = KEY_3;
+		break;
+	case KEY_T:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_9;
+		break;
+	case KEY_Y:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_0;
+		break;
+	case KEY_U:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_MINUS;
+		break;
+	case KEY_I:
+		returnValue = KEY_MINUS;
+		break;
+	case KEY_O:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_EQUAL;
+		break;
+	case KEY_P:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_2;
+		break;
+	case KEY_A:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_8;
 		break;
 	case KEY_S:
 		returnValue = KEY_4;
@@ -159,6 +198,23 @@ static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
 	case KEY_F:
 		returnValue = KEY_6;
 		break;
+	case KEY_G:
+		returnValue = KEY_SLASH;
+		break;
+	case KEY_H:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_SEMICOLON;
+		break;
+	case KEY_J:
+		returnValue = KEY_SEMICOLON;
+		break;
+	case KEY_K:
+		returnValue = KEY_APOSTROPHE;
+		break;
+	case KEY_L:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_APOSTROPHE;
+		break;
 	case KEY_Z:
 		returnValue = KEY_7;
 		break;
@@ -167,6 +223,20 @@ static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
 		break;
 	case KEY_C:
 		returnValue = KEY_9;
+		break;
+	case KEY_V:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_SLASH;
+		break;
+	case KEY_B:
+		bbqX0kbd_inject_shift();
+		returnValue = KEY_1;
+		break;
+	case KEY_N:
+		returnValue = KEY_COMMA;
+		break;
+	case KEY_M:
+		returnValue = KEY_DOT;
 		break;
 	case KEY_GRAVE:
 		returnValue = KEY_0;
