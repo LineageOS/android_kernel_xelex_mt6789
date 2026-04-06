@@ -136,11 +136,28 @@ static uint8_t bbqX0kbd_modkeys_to_bits(unsigned short mod_keycode)
 	return returnValue;
 }
 
-static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
+static void bbqX0kbd_inject_shift()
+{
+	if (g_bbqX0kbd_data) {
+		input_event(g_bbqX0kbd_data->input_dev, EV_MSC, MSC_SCAN, 0x700e1);
+		input_report_key(g_bbqX0kbd_data->input_dev, KEY_LEFTSHIFT, 1);
+		input_sync(g_bbqX0kbd_data->input_dev);
+		input_event(g_bbqX0kbd_data->input_dev, EV_MSC, MSC_SCAN, 0x700e1);
+		input_report_key(g_bbqX0kbd_data->input_dev, KEY_LEFTSHIFT, 0);
+		input_sync(g_bbqX0kbd_data->input_dev);
+	}
+}
+
+static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode, uint8_t keystate)
 {
 	unsigned short returnValue;
 
 	switch (keycode) {
+	case KEY_Q:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_3;
+		break;
 	case KEY_W:
 		returnValue = KEY_1;
 		break;
@@ -149,6 +166,39 @@ static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
 		break;
 	case KEY_R:
 		returnValue = KEY_3;
+		break;
+	case KEY_T:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_9;
+		break;
+	case KEY_Y:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_0;
+		break;
+	case KEY_U:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_MINUS;
+		break;
+	case KEY_I:
+		returnValue = KEY_MINUS;
+		break;
+	case KEY_O:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_EQUAL;
+		break;
+	case KEY_P:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_2;
+		break;
+	case KEY_A:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_8;
 		break;
 	case KEY_S:
 		returnValue = KEY_4;
@@ -159,6 +209,25 @@ static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
 	case KEY_F:
 		returnValue = KEY_6;
 		break;
+	case KEY_G:
+		returnValue = KEY_SLASH;
+		break;
+	case KEY_H:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_SEMICOLON;
+		break;
+	case KEY_J:
+		returnValue = KEY_SEMICOLON;
+		break;
+	case KEY_K:
+		returnValue = KEY_APOSTROPHE;
+		break;
+	case KEY_L:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_APOSTROPHE;
+		break;
 	case KEY_Z:
 		returnValue = KEY_7;
 		break;
@@ -167,6 +236,22 @@ static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
 		break;
 	case KEY_C:
 		returnValue = KEY_9;
+		break;
+	case KEY_V:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_SLASH;
+		break;
+	case KEY_B:
+		if (keystate == KEY_PRESSED_STATE)
+			bbqX0kbd_inject_shift();
+		returnValue = KEY_1;
+		break;
+	case KEY_N:
+		returnValue = KEY_COMMA;
+		break;
+	case KEY_M:
+		returnValue = KEY_DOT;
 		break;
 	case KEY_GRAVE:
 		returnValue = KEY_0;
@@ -374,7 +459,7 @@ static void bbqX0kbd_work_handler(struct work_struct *work_struct)
 					fallthrough;
 				default:
 					if (bbqX0kbd_data->lockStatus & NUMS_LOCK_BIT)
-						keycode = bbqX0kbd_get_num_lock_keycode(keycode);
+						keycode = bbqX0kbd_get_num_lock_keycode(keycode,fifoData[0]);
 					else if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
 						keycode = bbqX0kbd_get_altgr_keycode(keycode);
 #if (BBQX0KBD_TYPE == BBQ20KBD_PMOD)
@@ -525,7 +610,7 @@ static void bbqX0kbd_work_fnc(struct work_struct *work_struct_ptr)
 				fallthrough;
 			default:
 				if (bbqX0kbd_data->lockStatus & NUMS_LOCK_BIT)
-					keycode = bbqX0kbd_get_num_lock_keycode(keycode);
+					keycode = bbqX0kbd_get_num_lock_keycode(keycode,bbqX0kbd_data->fifoData[pos][0]);
 				else if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
 					keycode = bbqX0kbd_get_altgr_keycode(keycode);
 #if (BBQX0KBD_TYPE == BBQ20KBD_PMOD)
