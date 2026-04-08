@@ -458,7 +458,7 @@ static void bbqX0kbd_work_handler(struct work_struct *work_struct)
 						bbqX0kbd_data->modifier_keys_status &= ~bbqX0kbd_modkeys_to_bits(keycode);
 					fallthrough;
 				default:
-					if (bbqX0kbd_data->lockStatus & NUMS_LOCK_BIT)
+					if (bbqX0kbd_data->lockStatus & NUMS_LOCK_BIT || bbqX0kbd_data->modifier_keys_status & LEFT_ALT_BIT)
 						keycode = bbqX0kbd_get_num_lock_keycode(keycode,fifoData[0]);
 					else if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
 						keycode = bbqX0kbd_get_altgr_keycode(keycode);
@@ -609,7 +609,7 @@ static void bbqX0kbd_work_fnc(struct work_struct *work_struct_ptr)
 					bbqX0kbd_data->modifier_keys_status &= ~bbqX0kbd_modkeys_to_bits(keycode);
 				fallthrough;
 			default:
-				if (bbqX0kbd_data->lockStatus & NUMS_LOCK_BIT)
+				if (bbqX0kbd_data->lockStatus & NUMS_LOCK_BIT || bbqX0kbd_data->modifier_keys_status & LEFT_ALT_BIT)
 					keycode = bbqX0kbd_get_num_lock_keycode(keycode,bbqX0kbd_data->fifoData[pos][0]);
 				else if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
 					keycode = bbqX0kbd_get_altgr_keycode(keycode);

@@ -71,7 +71,9 @@ static unsigned short keycodes[NUM_KEYCODES] = {
 	[0x07] = KEY_BACK,
 	[0x12] = KEY_HOMEPAGE,
 
-	[0x1A] = KEY_LEFTALT,
+	/* Left alt is only used for symbols
+	 *[0x1A] = KEY_LEFTALT,
+	 */
 	[0x1B] = KEY_LEFTSHIFT,
 	[0x1D] = KEY_RIGHTALT,
 	[0x1C] = KEY_RIGHTSHIFT,
