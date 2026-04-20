@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8300f65_521fb1cf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16914
+      },
+      "writtenOn": "2026-04-20T16:25:58Z",
+      "side": 1,
+      "message": "Added USB HID keyboard scan codes and sync events to more accurately emulate a full keyboard",
+      "revId": "df77ce8ad366c7fe5f7551e2ee486f9a77d43e88",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
