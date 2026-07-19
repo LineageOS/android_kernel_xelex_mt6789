@@ -252,54 +252,6 @@ static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
 	return returnValue;
 }
 
-static unsigned short bbqX0kbd_get_altgr_keycode(unsigned short keycode)
-{
-	unsigned short returnValue;
-
-	switch (keycode) {
-	case KEY_E:
-		returnValue = KEY_PAGEDOWN;
-		break;
-	case KEY_R:
-		returnValue = KEY_PAGEUP;
-		break;
-	case KEY_Y:
-		returnValue = KEY_UP;
-		break;
-	case KEY_G:
-		returnValue = KEY_LEFT;
-		break;
-	case KEY_H:
-		returnValue = KEY_HOME;
-		break;
-	case KEY_J:
-		returnValue = KEY_RIGHT;
-		break;
-	case KEY_B:
-		returnValue = KEY_DOWN;
-		break;
-	case KEY_M:
-		returnValue = KEY_MENU;
-		break;
-	case KEY_K:
-		returnValue = KEY_VOLUMEUP;
-		break;
-	case KEY_L:
-		returnValue = KEY_VOLUMEDOWN;
-		break;
-	case KEY_GRAVE:
-		returnValue = KEY_MUTE;
-		break;
-	case KEY_BACKSPACE:
-		returnValue = KEY_DELETE;
-		break;
-	default:
-		returnValue = keycode;
-		break;
-	}
-	return returnValue;
-}
-
 static void bbqX0kbd_set_brightness(struct bbqX0kbd_data *bbqX0kbd_data, unsigned short keycode, uint8_t *reportKey)
 {
 	uint8_t swapVar;
@@ -447,12 +399,10 @@ static void bbqX0kbd_work_handler(struct work_struct *work_struct)
 						bbqX0kbd_data->modifier_keys_status &= ~bbqX0kbd_modkeys_to_bits(keycode);
 					fallthrough;
 				default:
-					if (keycode == KEY_LEFTALT)	/* Left alt is only used for symbols */
+					if (keycode == KEY_LEFTALT || keycode == KEY_RIGHTALT)	/* Alt is only used for symbols */
 						reportKey = 255;
-					if (bbqX0kbd_data->lockStatus & (NUMS_LOCK_BIT | LEFT_ALT_BIT))
+					if (bbqX0kbd_data->lockStatus & (NUMS_LOCK_BIT | LEFT_ALT_BIT | RIGHT_ALT_BIT))
 						keycode = bbqX0kbd_get_num_lock_keycode(keycode);
-					else if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
-						keycode = bbqX0kbd_get_altgr_keycode(keycode);
 #if (BBQX0KBD_TYPE == BBQ20KBD_PMOD)
 					else if (bbqX0kbd_data->modifier_keys_status & LEFT_ALT_BIT && fifoData[1] == 0x05 && (bbqX0kbd_data->q20_spec_switch_key_mouse == 0))
 						keycode = BTN_RIGHT;
@@ -600,12 +550,10 @@ static void bbqX0kbd_work_fnc(struct work_struct *work_struct_ptr)
 					bbqX0kbd_data->modifier_keys_status &= ~bbqX0kbd_modkeys_to_bits(keycode);
 				fallthrough;
 			default:
-				if (keycode == KEY_LEFTALT)	/* Left alt is only used for symbols */
+				if (keycode == KEY_LEFTALT || keycode == KEY_RIGHTALT)	/* Alt is only used for symbols */
 					reportKey = 255;
-				if (bbqX0kbd_data->lockStatus & (NUMS_LOCK_BIT | LEFT_ALT_BIT))
+				if (bbqX0kbd_data->lockStatus & (NUMS_LOCK_BIT | LEFT_ALT_BIT | RIGHT_ALT_BIT))
 					keycode = bbqX0kbd_get_num_lock_keycode(keycode);
-				else if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
-					keycode = bbqX0kbd_get_altgr_keycode(keycode);
 #if (BBQX0KBD_TYPE == BBQ20KBD_PMOD)
 				else if (bbqX0kbd_data->modifier_keys_status & LEFT_ALT_BIT && bbqX0kbd_data->fifoData[pos][1] == 0x05 && (bbqX0kbd_data->q20_spec_switch_key_mouse == 0))
 					keycode = BTN_RIGHT;
