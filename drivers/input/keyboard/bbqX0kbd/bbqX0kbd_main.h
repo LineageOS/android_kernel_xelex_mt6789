@@ -96,6 +96,7 @@ struct bbqX0kbd_data {
 	uint8_t lastScreenBrightness;
 #endif
 	unsigned short keycode[NUM_KEYCODES];
+	unsigned short pressed_keycode[NUM_KEYCODES];
 	struct i2c_client *i2c_client;
 	struct input_dev *input_dev;
 	
