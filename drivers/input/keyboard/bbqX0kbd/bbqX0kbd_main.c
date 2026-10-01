@@ -55,10 +55,13 @@ static int q20_switch_key_mouse_debug_read(struct seq_file *m, void *v)
 
 static ssize_t q20_switch_key_mouse_debug_write(struct file *filp, const char  *buff, size_t len, loff_t *data)
 {
-	unsigned char writebuf[50];	
-	if (copy_from_user(&writebuf, buff, len)) {
+	unsigned char writebuf[50];
+	size_t count = min(len, sizeof(writebuf) - 1);
+
+	if (copy_from_user(writebuf, buff, count)) {
 		return -EFAULT;
 	}
+	writebuf[count] = '\0';
 	
 	if (g_bbqX0kbd_data == NULL) {
 		return -EFAULT;
@@ -90,10 +93,13 @@ static int q20_spec_power_flag_debug_read(struct seq_file *m, void *v)
 
 static ssize_t q20_spec_power_flag_debug_write(struct file *filp, const char  *buff, size_t len, loff_t *data)
 {
-	unsigned char writebuf[50];	
-	if (copy_from_user(&writebuf, buff, len)) {
+	unsigned char writebuf[50];
+	size_t count = min(len, sizeof(writebuf) - 1);
+
+	if (copy_from_user(writebuf, buff, count)) {
 		return -EFAULT;
 	}
+	writebuf[count] = '\0';
 	
 	if (g_bbqX0kbd_data == NULL) {
 		return -EFAULT;
@@ -795,10 +801,13 @@ static int firmware_upgrade_open(struct inode *inode, struct file *file)
 static ssize_t firmware_upgrade_debug_write(struct file *filp, const char  *buff, size_t len, loff_t *data)
 {
 	struct bbqX0kbd_data *bbqX0kbd_data = g_bbqX0kbd_data;
-	unsigned char writebuf[50];	
-	if (copy_from_user(&writebuf, buff, len)) {
+	unsigned char writebuf[50];
+	size_t count = min(len, sizeof(writebuf) - 1);
+
+	if (copy_from_user(writebuf, buff, count)) {
 		return -EFAULT;
 	}
+	writebuf[count] = '\0';
 
     BBQX0KBD_KEYBOARD_ERR("HodafoneLog firmware_upgrade_debug_write writebuf=%s",writebuf);
    	if(writebuf[0] == '0'){
