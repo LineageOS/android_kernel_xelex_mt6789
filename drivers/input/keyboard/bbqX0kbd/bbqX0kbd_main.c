@@ -998,8 +998,11 @@ static int bbqX0kbd_probe(struct i2c_client *client, const struct i2c_device_id 
 	input->keycodesize = sizeof(bbqX0kbd_data->keycode[0]);
 	input->keycodemax = ARRAY_SIZE(bbqX0kbd_data->keycode);
 
-	for (i = 0; i < NUM_KEYCODES; i++)
+	for (i = 0; i < NUM_KEYCODES; i++) {
 		__set_bit(bbqX0kbd_data->keycode[i], input->keybit);
+		/* Also register what the sym layer can turn the key into */
+		__set_bit(bbqX0kbd_get_altgr_keycode(bbqX0kbd_data->keycode[i]), input->keybit);
+	}
 
 	__clear_bit(KEY_RESERVED, input->keybit);
 
