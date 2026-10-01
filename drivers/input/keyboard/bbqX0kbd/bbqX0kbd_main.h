@@ -49,8 +49,8 @@
 #define PDRV_COMPATIBLE_NAME			"wallComputer,pdrv_bbqX0kbd"
 #define DEVICE_NAME				"Q25_keyboard"
 #define BBQX0KBD_BUS_TYPE		BUS_I2C
-#define BBQX0KBD_VENDOR_ID		0x0001
-#define BBQX0KBD_PRODUCT_ID		0x0001
+#define BBQX0KBD_VENDOR_ID		0xBB20
+#define BBQX0KBD_PRODUCT_ID		0x0025
 #define BBQX0KBD_VERSION_ID		0x0001
 
 
