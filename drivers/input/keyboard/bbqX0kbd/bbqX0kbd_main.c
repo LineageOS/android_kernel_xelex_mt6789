@@ -316,6 +316,21 @@ static void bbqX0kbd_handle_key(struct bbqX0kbd_data *bbqX0kbd_data, uint8_t key
 	}
 }
 
+/* Release every key still held, e.g. before the keyboard loses power */
+static void bbqX0kbd_release_all(struct bbqX0kbd_data *bbqX0kbd_data)
+{
+	int i;
+
+	for (i = 0; i < NUM_KEYCODES; i++) {
+		if (bbqX0kbd_data->pressed_keycode[i] != KEY_RESERVED) {
+			input_report_key(bbqX0kbd_data->input_dev, bbqX0kbd_data->pressed_keycode[i], 0);
+			bbqX0kbd_data->pressed_keycode[i] = KEY_RESERVED;
+		}
+	}
+	bbqX0kbd_data->modifier_keys_status = 0x00;
+	input_sync(bbqX0kbd_data->input_dev);
+}
+
 #if (BBQX0KBD_INT == BBQX0KBD_NO_INT)
 static void bbqX0kbd_work_handler(struct work_struct *work_struct)
 {
@@ -1134,6 +1149,11 @@ static int bbqX0kbd_suspend(struct device *dev)
         enable_irq_wake(client->irq);
     } else {
         disable_irq(client->irq);
+#if (BBQX0KBD_INT == BBQX0KBD_USE_INT)
+		flush_work(&bbqX0kbd_data->work_struct);
+#endif
+		/* Releases of keys held now are lost once the keyboard is off */
+		bbqX0kbd_release_all(bbqX0kbd_data);
 		if (bbqX0kbd_data->power_vdd_gpio >= 0) {
 			gpio_set_value(bbqX0kbd_data->power_vdd_gpio, 0);
 		}
