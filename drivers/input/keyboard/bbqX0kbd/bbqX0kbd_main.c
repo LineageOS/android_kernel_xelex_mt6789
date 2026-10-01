@@ -982,8 +982,6 @@ static int bbqX0kbd_probe(struct i2c_client *client, const struct i2c_device_id 
 	bbqX0kbd_data->keycode[0x05] = KEY_ENTER;
 #endif	
 
-	fwu_proc_entry = proc_create(PROC_NAME, 0777, NULL,&firmware_upgrade_proc_ops);
-
 	input = devm_input_allocate_device(dev);
 	if (!input) {
 		BBQX0KBD_KEYBOARD_ERR("%s Could not devm_input_allocate_device BBQX0KBD. Error: %d\n", __func__, returnValue);
@@ -1288,6 +1286,9 @@ module_init(bbqX0kbd_init);
 static void __exit bbqX0kbd_exit(void)
 {
 	BBQX0KBD_KEYBOARD_LOG("%s Exiting BBQX0KBD.\n", __func__);
+	proc_remove(q20_spec_power_flag_proc_entry);
+	proc_remove(q20_switch_key_mouse_proc_entry);
+	proc_remove(fwu_proc_entry);
 #if (BBQX0KBD_INT == BBQX0KBD_NO_INT)
 	atomic_set(&keepWorking, 1);
 	flush_workqueue(workqueue_struct);
