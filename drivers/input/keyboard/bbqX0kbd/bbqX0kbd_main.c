@@ -452,6 +452,7 @@ static void bbqX0kbd_read_fifo(struct bbqX0kbd_data *bbqX0kbd_data)
 		returnValue = bbqX0kbd_read(i2c_client, BBQX0KBD_I2C_ADDRESS, REG_FIF, fifo_data, 2*sizeof(uint8_t));
 		if (returnValue != 0) {
 			BBQX0KBD_KEYBOARD_ERR("%s Could not read REG_FIF, Error: %d\n", __func__, returnValue);
+			bbqX0kbd_data->fifoCount = pos;
 			return;
 		}
 		bbqX0kbd_data->fifoData[pos][0] = fifo_data[0];
@@ -578,36 +579,37 @@ static irqreturn_t bbqX0kbd_irq_handler(int irq, void *dev_id)
 	if (registerValue & REG_INT_OVERFLOW)
 		dev_warn(&client->dev, "%s overflow occurred.\n", __func__);
 
+	/*
+	 * The work re-enables the IRQ, so schedule it whenever an interrupt
+	 * is pending, even if a read below fails or no handled bit is set.
+	 */
 	if (registerValue & REG_INT_KEY) {
 		bbqX0kbd_read_fifo(bbqX0kbd_data);
-		schedule_work(&bbqX0kbd_data->work_struct);
 #if (BBQX0KBD_TYPE == BBQ20KBD_PMOD)
-		if(bbqX0kbd_data->q20_spec_switch_key_mouse == 1) {
-			return IRQ_HANDLED;
-		}
+		if (bbqX0kbd_data->q20_spec_switch_key_mouse == 1)
+			goto out;
 #endif
 	}
 #if (BBQX0KBD_TYPE == BBQ20KBD_PMOD)
+	bbqX0kbd_data->touchInt = 0;
 	if (registerValue & REG_INT_TOUCH) {
 		returnValue = bbqX0kbd_read(client, BBQX0KBD_I2C_ADDRESS, REG_TOX, &registerValue, sizeof(uint8_t));
 		if (returnValue < 0) {
 			BBQX0KBD_KEYBOARD_ERR("%s : Could not read REG_TOX. Error: %d\n", __func__, returnValue);
-			enable_irq(client->irq);
-			return IRQ_NONE;
+			goto out;
 		}
 		bbqX0kbd_data->rel_x = (int8_t)registerValue;
 		returnValue = bbqX0kbd_read(client, BBQX0KBD_I2C_ADDRESS, REG_TOY, &registerValue, sizeof(uint8_t));
 		if (returnValue < 0) {
 			BBQX0KBD_KEYBOARD_ERR("%s : Could not read REG_TOY. Error: %d\n", __func__, returnValue);
-			enable_irq(client->irq);
-			return IRQ_NONE;
+			goto out;
 		}
 		bbqX0kbd_data->rel_y = (int8_t)registerValue;
 		bbqX0kbd_data->touchInt = 1;
-		schedule_work(&bbqX0kbd_data->work_struct);
-	} else
-		bbqX0kbd_data->touchInt = 0;
+	}
+out:
 #endif
+	schedule_work(&bbqX0kbd_data->work_struct);
 
 	return IRQ_HANDLED;
 }
