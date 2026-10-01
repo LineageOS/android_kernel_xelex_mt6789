@@ -63,9 +63,6 @@
 #define RIGHT_ALT_BIT			BIT(6)
 #define RIGHT_GUI_BIT			BIT(7)
 
-#define CAPS_LOCK_BIT			BIT(0)
-#define NUMS_LOCK_BIT			BIT(1)
-
 #if (BBQX0KBD_INT == BBQX0KBD_NO_INT)
 #define BBQX0KBD_DEFAULT_WORK_RATE	40
 #define BBQX0KBD_MINIMUM_WORK_RATE	10
@@ -92,7 +89,6 @@ struct bbqX0kbd_data {
 #endif
 	uint8_t version_number;
 	uint8_t modifier_keys_status;
-	uint8_t lockStatus;
 	uint8_t keyboardBrightness;
 	uint8_t lastKeyboardBrightness;
 #if (BBQX0KBD_TYPE == BBQ10KBD_FEATHERWING)

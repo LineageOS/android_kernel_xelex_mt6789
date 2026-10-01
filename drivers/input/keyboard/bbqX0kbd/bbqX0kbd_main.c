@@ -136,48 +136,6 @@ static uint8_t bbqX0kbd_modkeys_to_bits(unsigned short mod_keycode)
 	return returnValue;
 }
 
-static unsigned short bbqX0kbd_get_num_lock_keycode(unsigned short keycode)
-{
-	unsigned short returnValue;
-
-	switch (keycode) {
-	case KEY_W:
-		returnValue = KEY_1;
-		break;
-	case KEY_E:
-		returnValue = KEY_2;
-		break;
-	case KEY_R:
-		returnValue = KEY_3;
-		break;
-	case KEY_S:
-		returnValue = KEY_4;
-		break;
-	case KEY_D:
-		returnValue = KEY_5;
-		break;
-	case KEY_F:
-		returnValue = KEY_6;
-		break;
-	case KEY_Z:
-		returnValue = KEY_7;
-		break;
-	case KEY_X:
-		returnValue = KEY_8;
-		break;
-	case KEY_C:
-		returnValue = KEY_9;
-		break;
-	case KEY_GRAVE:
-		returnValue = KEY_0;
-		break;
-	default:
-		returnValue = keycode;
-		break;
-	}
-	return returnValue;
-}
-
 static unsigned short bbqX0kbd_get_altgr_keycode(unsigned short keycode)
 {
 	unsigned short returnValue;
@@ -352,16 +310,13 @@ static void bbqX0kbd_work_handler(struct work_struct *work_struct)
 
 				keycode = bbqX0kbd_data->keycode[fifoData[1]];
 #if (DEBUG_LEVEL & DEBUG_LEVEL_LD)
-				BBQX0KBD_KEYBOARD_LOG("%s BEFORE: MODKEYS: 0x%02X LOCKKEYS: 0x%02X scancode: %d(%c) keycode: %d State: %d reportKey: %d\n", __func__, bbqX0kbd_data->modifier_keys_status, bbqX0kbd_data->lockStatus, fifoData[1], fifoData[1], keycode, fifoData[0], reportKey);
+				BBQX0KBD_KEYBOARD_LOG("%s BEFORE: MODKEYS: 0x%02X scancode: %d(%c) keycode: %d State: %d reportKey: %d\n", __func__, bbqX0kbd_data->modifier_keys_status, fifoData[1], fifoData[1], keycode, fifoData[0], reportKey);
 #endif
 				switch (keycode) {
 				case KEY_UNKNOWN:
 					BBQX0KBD_KEYBOARD_LOG("%s Could not get Keycode for Scancode: [0x%02X]\n", __func__, fifoData[1]);
 					break;
 				case KEY_RIGHTSHIFT:
-					if (bbqX0kbd_data->modifier_keys_status & LEFT_ALT_BIT && fifoData[0] == KEY_PRESSED_STATE)
-						bbqX0kbd_data->lockStatus ^= NUMS_LOCK_BIT;
-					fallthrough;
 				case KEY_LEFTSHIFT:
 				case KEY_RIGHTALT:
 				case KEY_LEFTALT:
@@ -373,9 +328,7 @@ static void bbqX0kbd_work_handler(struct work_struct *work_struct)
 						bbqX0kbd_data->modifier_keys_status &= ~bbqX0kbd_modkeys_to_bits(keycode);
 					fallthrough;
 				default:
-					if (bbqX0kbd_data->lockStatus & NUMS_LOCK_BIT)
-						keycode = bbqX0kbd_get_num_lock_keycode(keycode);
-					else if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
+					if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
 						keycode = bbqX0kbd_get_altgr_keycode(keycode);
 #if (BBQX0KBD_TYPE == BBQ20KBD_PMOD)
 					else if (bbqX0kbd_data->modifier_keys_status & LEFT_ALT_BIT && fifoData[1] == 0x05 && (bbqX0kbd_data->q20_spec_switch_key_mouse == 0))
@@ -384,7 +337,7 @@ static void bbqX0kbd_work_handler(struct work_struct *work_struct)
 					if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT && fifoData[0] == KEY_PRESSED_STATE)
 						bbqX0kbd_set_brightness(bbqX0kbd_data, keycode, &reportKey);
 #if (DEBUG_LEVEL & DEBUG_LEVEL_LD)
-					BBQX0KBD_KEYBOARD_LOG("%s AFTER : MODKEYS: 0x%02X LOCKKEYS: 0x%02X scancode: %d(%c) keycode: %d State: %d reportKey: %d\n", __func__, bbqX0kbd_data->modifier_keys_status, bbqX0kbd_data->lockStatus, fifoData[1], fifoData[1],  keycode, fifoData[0], reportKey);
+					BBQX0KBD_KEYBOARD_LOG("%s AFTER : MODKEYS: 0x%02X scancode: %d(%c) keycode: %d State: %d reportKey: %d\n", __func__, bbqX0kbd_data->modifier_keys_status, fifoData[1], fifoData[1],  keycode, fifoData[0], reportKey);
 #endif
 					if (reportKey == 2)
 						input_report_key(bbqX0kbd_data->input_dev, keycode, fifoData[0] == KEY_PRESSED_STATE);
@@ -503,16 +456,13 @@ static void bbqX0kbd_work_fnc(struct work_struct *work_struct_ptr)
 
 			keycode = bbqX0kbd_data->keycode[bbqX0kbd_data->fifoData[pos][1]];
 #if (DEBUG_LEVEL & DEBUG_LEVEL_LD)
-				BBQX0KBD_KEYBOARD_LOG("%s BEFORE: MODKEYS: 0x%02X LOCKKEYS: 0x%02X scancode: %d(%c) keycode: %d State: %d reportKey: %d\n", __func__, bbqX0kbd_data->modifier_keys_status, bbqX0kbd_data->lockStatus, bbqX0kbd_data->fifoData[pos][1], bbqX0kbd_data->fifoData[pos][1], keycode, bbqX0kbd_data->fifoData[pos][0], reportKey);
+				BBQX0KBD_KEYBOARD_LOG("%s BEFORE: MODKEYS: 0x%02X scancode: %d(%c) keycode: %d State: %d reportKey: %d\n", __func__, bbqX0kbd_data->modifier_keys_status, bbqX0kbd_data->fifoData[pos][1], bbqX0kbd_data->fifoData[pos][1], keycode, bbqX0kbd_data->fifoData[pos][0], reportKey);
 #endif
 			switch (keycode) {
 			case KEY_UNKNOWN:
 				BBQX0KBD_KEYBOARD_LOG("%s Could not get Keycode for Scancode: [0x%02X]\n", __func__, bbqX0kbd_data->fifoData[pos][1]);
 				break;
 			case KEY_RIGHTSHIFT:
-				if (bbqX0kbd_data->modifier_keys_status & LEFT_ALT_BIT && bbqX0kbd_data->fifoData[pos][0] == KEY_PRESSED_STATE)
-					bbqX0kbd_data->lockStatus ^= NUMS_LOCK_BIT;
-				fallthrough;
 			case KEY_LEFTSHIFT:
 			case KEY_RIGHTALT:
 			case KEY_LEFTALT:
@@ -524,9 +474,7 @@ static void bbqX0kbd_work_fnc(struct work_struct *work_struct_ptr)
 					bbqX0kbd_data->modifier_keys_status &= ~bbqX0kbd_modkeys_to_bits(keycode);
 				fallthrough;
 			default:
-				if (bbqX0kbd_data->lockStatus & NUMS_LOCK_BIT)
-					keycode = bbqX0kbd_get_num_lock_keycode(keycode);
-				else if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
+				if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT)
 					keycode = bbqX0kbd_get_altgr_keycode(keycode);
 #if (BBQX0KBD_TYPE == BBQ20KBD_PMOD)
 				else if (bbqX0kbd_data->modifier_keys_status & LEFT_ALT_BIT && bbqX0kbd_data->fifoData[pos][1] == 0x05 && (bbqX0kbd_data->q20_spec_switch_key_mouse == 0))
@@ -535,7 +483,7 @@ static void bbqX0kbd_work_fnc(struct work_struct *work_struct_ptr)
 				if (bbqX0kbd_data->modifier_keys_status & RIGHT_ALT_BIT && bbqX0kbd_data->fifoData[pos][0] == KEY_PRESSED_STATE)
 					bbqX0kbd_set_brightness(bbqX0kbd_data, keycode, &reportKey);
 #if (DEBUG_LEVEL & DEBUG_LEVEL_LD)
-				BBQX0KBD_KEYBOARD_LOG("%s BEFORE: MODKEYS: 0x%02X LOCKKEYS: 0x%02X scancode: %d(%c) keycode: %d State: %d reportKey: %d\n", __func__, bbqX0kbd_data->modifier_keys_status, bbqX0kbd_data->lockStatus, bbqX0kbd_data->fifoData[pos][1], bbqX0kbd_data->fifoData[pos][1], keycode, bbqX0kbd_data->fifoData[pos][0], reportKey);
+				BBQX0KBD_KEYBOARD_LOG("%s BEFORE: MODKEYS: 0x%02X scancode: %d(%c) keycode: %d State: %d reportKey: %d\n", __func__, bbqX0kbd_data->modifier_keys_status, bbqX0kbd_data->fifoData[pos][1], bbqX0kbd_data->fifoData[pos][1], keycode, bbqX0kbd_data->fifoData[pos][0], reportKey);
 #endif
 				if (reportKey == 2)
 					input_report_key(input_dev, keycode, bbqX0kbd_data->fifoData[pos][0] == KEY_PRESSED_STATE);
@@ -1070,7 +1018,6 @@ static int bbqX0kbd_probe(struct i2c_client *client, const struct i2c_device_id 
 #endif
 
 	bbqX0kbd_data->modifier_keys_status = 0x00; // Serendipitously coincides with idle state of all keys.
-	bbqX0kbd_data->lockStatus = 0x00;
 #if (BBQX0KBD_TYPE == BBQ10KBD_FEATHERWING)
 	bbqX0kbd_data->screenBrightness = 0xFF;
 	bbqX0kbd_data->lastScreenBrightness = bbqX0kbd_data->screenBrightness;
