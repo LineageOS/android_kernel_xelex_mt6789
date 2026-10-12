@@ -813,6 +813,17 @@ static ssize_t firmware_upgrade_debug_write(struct file *filp, const char  *buff
 	writebuf[count] = '\0';
 
     BBQX0KBD_KEYBOARD_ERR("HodafoneLog firmware_upgrade_debug_write writebuf=%s",writebuf);
+
+	/* Releases of keys held now are lost once the keyboard is off */
+	if ((writebuf[0] == '0' || writebuf[0] == '1') && bbqX0kbd_data->input_dev) {
+		disable_irq(bbqX0kbd_data->i2c_client->irq);
+#if (BBQX0KBD_INT == BBQX0KBD_USE_INT)
+		flush_work(&bbqX0kbd_data->work_struct);
+#endif
+		bbqX0kbd_release_all(bbqX0kbd_data);
+		enable_irq(bbqX0kbd_data->i2c_client->irq);
+	}
+
    	if(writebuf[0] == '0'){
 		//trun off 
 		if (bbqX0kbd_data->power_vdd_gpio >= 0) {
