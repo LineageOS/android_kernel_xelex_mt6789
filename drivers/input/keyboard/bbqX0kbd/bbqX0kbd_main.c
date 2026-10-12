@@ -1150,13 +1150,13 @@ static int bbqX0kbd_suspend(struct device *dev)
     
     /* Turn off backlight to save power */
 	returnValue = bbqX0kbd_write(client, BBQX0KBD_I2C_ADDRESS, REG_BKL, &registerValue, sizeof(uint8_t));
-	if (returnValue != 0) {
+	if (returnValue != 0)
 		BBQX0KBD_KEYBOARD_ERR("%s Could not write to BBQX0KBD Backlight. Error: %d\n", __func__, returnValue);
-		return 0;
-	}
 	mdelay(10);
-    
-    if (device_may_wakeup(dev) || bbqX0kbd_data->q20_spec_power_flag) {
+
+	/* Resume must undo what suspend did, even if the power flag changes */
+	bbqX0kbd_data->suspend_irq_wake = device_may_wakeup(dev) || bbqX0kbd_data->q20_spec_power_flag;
+    if (bbqX0kbd_data->suspend_irq_wake) {
         enable_irq_wake(client->irq);
     } else {
         disable_irq(client->irq);
@@ -1179,9 +1179,9 @@ static int bbqX0kbd_resume(struct device *dev)
 	uint8_t registerValue = 0x00;
     struct i2c_client *client = to_i2c_client(dev);
     struct bbqX0kbd_data *bbqX0kbd_data = i2c_get_clientdata(client);
-    
-    
-    if (device_may_wakeup(dev) || bbqX0kbd_data->q20_spec_power_flag) {
+
+
+    if (bbqX0kbd_data->suspend_irq_wake) {
         disable_irq_wake(client->irq);
     } else {
 		if (bbqX0kbd_data->power_vdd_gpio >= 0) {

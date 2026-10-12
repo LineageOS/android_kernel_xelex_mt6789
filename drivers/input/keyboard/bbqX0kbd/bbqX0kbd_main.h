@@ -108,7 +108,9 @@ struct bbqX0kbd_data {
 	int firmware_download_gpio;
 	
 	bool suspended;
-	
+	/* Whether suspend kept the keyboard powered as a wakeup source */
+	bool suspend_irq_wake;
+
 	//turn off/on mouse or key
 	uint8_t q20_spec_switch_key_mouse;
 	//keyboard poweroff/poweron
