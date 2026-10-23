@@ -817,5 +817,6 @@ config KEYBOARD_TOUCHPAD
 
 source "drivers/input/keyboard/bbqX0kbd/Kconfig"
 source "drivers/input/keyboard/aw95016/Kconfig"
+source "drivers/input/keyboard/synaptics_dsx/Kconfig"
 
 endif
