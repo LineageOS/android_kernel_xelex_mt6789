@@ -806,6 +806,16 @@ config KEYBOARD_Q20_KEYBOARD
 	  To compile this driver as a module, choose M here: the
 	  module will be called Q20 KEYBAORD.
 
+config KEYBOARD_TOUCHPAD
+	tristate "keyboard touchpad Support"
+	depends on OF && HAVE_CLK
+	help
+	  Say Y here if you want to use the keypad on MediaTek SoCs.
+	  If unsure, say N.
+	  To compile this driver as a module, choose M here: the
+	  module will be called keyboard touchpad.
+
 source "drivers/input/keyboard/bbqX0kbd/Kconfig"
+source "drivers/input/keyboard/aw95016/Kconfig"
 
 endif
