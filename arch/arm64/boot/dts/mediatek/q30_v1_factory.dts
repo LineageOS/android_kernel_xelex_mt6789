@@ -865,6 +865,24 @@
 	};
 };
 
+/*
+/delete-node/ &mtk_camera_eeprom0; // Q25 original from cust_mt6789_camera.dtsi i2c7
+&i2c7 {
+	mtk_camera_eeprom3:camera_eeprom3@53 {
+		compatible = "mediatek,camera_eeprom";
+		reg = <0x53>;
+		status = "okay";
+	};
+};
+&i2c8 {
+	mtk_camera_eeprom0:camera_eeprom0@50 {
+		compatible = "mediatek,camera_eeprom";
+		reg = <0x50>;
+		status = "okay";
+	};
+};
+*/
+
 &kd_camera_hw1 {
 	cam0_enable_sensor = "s5kjn1_mipi_raw ov64b40_mipi_raw";
 	cam1_enable_sensor = "imx111_mipi_raw imx134_mipi_raw";
