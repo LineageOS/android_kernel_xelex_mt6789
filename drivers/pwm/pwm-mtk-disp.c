@@ -450,6 +450,17 @@ static const struct mtk_pwm_data mt6799_pwm_data = {
 	.commit_mask = 0x1,
 };
 
+static const struct mtk_pwm_data mt6789_pwm_data = {
+	.enable_mask = BIT(0),
+	.con0 = 0x18,
+	.con0_sel = 0x0,
+	.con1 = 0x1C,
+	.has_commit = true,
+	.commit = 0xC,
+	.commit_mask = 0x1,
+	.need_power_on = true,
+};
+
 static const struct mtk_pwm_data mt6885_pwm_data = {
 	.enable_mask = BIT(0),
 	.con0 = 0x18,
@@ -502,7 +513,7 @@ static const struct of_device_id mtk_disp_pwm_of_match[] = {
 	{ .compatible = "mediatek,mt6879-disp-pwm", .data = &mt6799_pwm_data},
 	{ .compatible = "mediatek,mt6895-disp-pwm0", .data = &mt6799_pwm_data},
 	{ .compatible = "mediatek,mt6855-disp-pwm", .data = &mt6799_pwm_data},
-	{ .compatible = "mediatek,mt6789-disp-pwm", .data = &mt6799_pwm_data},
+	{ .compatible = "mediatek,mt6789-disp-pwm", .data = &mt6789_pwm_data},
 	{ .compatible = "mediatek,mt8173-disp-pwm", .data = &mt8173_pwm_data},
 	{ .compatible = "mediatek,mt8183-disp-pwm", .data = &mt8183_pwm_data},
 	{ .compatible = "mediatek,mt6768-disp-pwm", .data = &mt6768_pwm_data},
