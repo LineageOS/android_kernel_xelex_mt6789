@@ -30,10 +30,12 @@
 #if IS_ENABLED(CONFIG_SND_SOC_OCA72XXX)
 extern int oca72xxx_add_codec_controls(void *codec);
 extern int oca72xxx_set_profile(int dev_index, char *profile);
+extern int oca72xxx_get_dev_count(void);
 
 static char *oca_profile[] = {"Music", "Off"};/*oca72xxx_acf.bin 文件中配置场景*/
 enum oca72xxx_dev_index {
        OCA_DEV_0 = 0,
+       OCA_DEV_1 = 1,
 };
 #endif
 /*
@@ -108,14 +110,27 @@ static int mt6789_mt6366_spk_amp_event(struct snd_soc_dapm_widget *w,
 
 #if IS_ENABLED(CONFIG_SND_SOC_OCA72XXX)
 		/*切换 PA OCA_DEV_0 为 Music 场景*/
-		oca72xxx_set_profile(OCA_DEV_0, oca_profile[0]);
+		if (oca72xxx_get_dev_count() > OCA_DEV_0) {
+			oca72xxx_set_profile(OCA_DEV_0, oca_profile[0]);
+		}
+		
+		/*切换 PA OCA_DEV_1 为 Music 场景*/
+		if (oca72xxx_get_dev_count() > OCA_DEV_1) {
+			oca72xxx_set_profile(OCA_DEV_1, oca_profile[0]);
+		}
 #endif
 		break;
 	case SND_SOC_DAPM_PRE_PMD:
 		/* spk amp off control */
 #if IS_ENABLED(CONFIG_SND_SOC_OCA72XXX)
 		/*切换 PA OCA_DEV_0 为 off 场景*/
-		oca72xxx_set_profile(OCA_DEV_0, oca_profile[1]);
+		if (oca72xxx_get_dev_count() > OCA_DEV_0) {
+			oca72xxx_set_profile(OCA_DEV_0, oca_profile[1]);
+		}
+		
+		if (oca72xxx_get_dev_count() > OCA_DEV_1) {
+			oca72xxx_set_profile(OCA_DEV_1, oca_profile[1]);
+		}
 #endif
 		break;
 	default:
@@ -328,7 +343,7 @@ static int mt6789_mt6366_init(struct snd_soc_pcm_runtime *rtd)
 	mt6358_set_codec_ops(codec_component, &ops);
 
 #if IS_ENABLED(CONFIG_SND_SOC_OCA72XXX)
-	printk("oca72xxx_add_codec_controls");
+	//printk("oca72xxx_add_codec_controls");
 	ret = oca72xxx_add_codec_controls((void *)codec_component);
 	if (ret < 0) {
 		pr_err("%s: add_codec_controls failed, err %d\n",__func__, ret);
