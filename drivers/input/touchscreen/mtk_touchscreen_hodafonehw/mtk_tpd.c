@@ -27,8 +27,8 @@
 #endif
 
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_I2C
-extern int synaptics_rmi4_init(void);
-extern void synaptics_rmi4_exit(void);
+extern int synaptics_dsx_module_init(void);
+extern void synaptics_dsx_module_exit(void);
 #endif
 #ifdef CONFIG_TOUCHSCREEN_Q20_TOUCH
 extern int s2716b_ts_module_init(void);
@@ -847,9 +847,9 @@ static int __init tpd_device_init(void)
 	pr_info("[%s-%s-%d]\n", __FILE__, __func__, __LINE__);
 	tpd_log_init();
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_I2C
-	ret = synaptics_rmi4_init();
+	ret = synaptics_dsx_module_init();
 	if (ret) {
-		pr_info("tpd : synaptics_rmi4_init init failed ret:%d\n", ret);
+		pr_info("tpd : synaptics_dsx_module_init init failed ret:%d\n", ret);
 	}
 #endif
 #ifdef CONFIG_TOUCHSCREEN_Q20_TOUCH
@@ -872,7 +872,7 @@ static void __exit tpd_device_exit(void)
 	TPD_DMESG("MediaTek touch panel driver exit\n");
 	tpd_log_exit();
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_I2C
-	synaptics_rmi4_exit();
+	synaptics_dsx_module_exit();
 #endif
 #ifdef CONFIG_TOUCHSCREEN_Q20_TOUCH
 	s2716b_ts_module_exit();
