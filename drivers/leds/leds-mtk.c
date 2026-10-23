@@ -15,6 +15,7 @@
 #include <linux/sched/clock.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+#include <linux/delay.h>
 #include <leds-mtk.h>
 
 
@@ -23,6 +24,13 @@
  ***************************************************************************/
 #undef pr_fmt
 #define pr_fmt(fmt) KBUILD_MODNAME " %s(%d) :" fmt"\n", __func__, __LINE__
+
+/* Wakeup backlight delay parameter (in milliseconds)
+ * Adjust this value to control backlight delay time when system wakeup
+ * This works for all backlight control methods (PWM, I2C, Display, etc.)
+ * Set to 0 to disable delay feature
+ */
+#define WAKEUP_BACKLIGHT_DELAY_MS  200
 
 static int mtk_set_brightness(struct led_classdev *led_cdev,
 					 enum led_brightness brightness);
@@ -249,6 +257,13 @@ static int mtk_set_hw_brightness(struct mt_led_data *led_dat,
 {
 
 	pr_debug("set hw brightness: %d -> %d", led_dat->hw_brightness, brightness);
+
+	/* Check if this is a wakeup scenario (backlight turning on from off state) */
+	if (WAKEUP_BACKLIGHT_DELAY_MS > 0 && led_dat->hw_brightness == 0 && brightness > 0) {
+		pr_info("Wakeup backlight delay: %d ms (method: %s)",
+			WAKEUP_BACKLIGHT_DELAY_MS, led_dat->conf.cdev.name);
+		msleep(WAKEUP_BACKLIGHT_DELAY_MS);
+	}
 
 	brightness = min(brightness, led_dat->conf.limit_hw_brightness);
 	if (brightness == led_dat->hw_brightness)
