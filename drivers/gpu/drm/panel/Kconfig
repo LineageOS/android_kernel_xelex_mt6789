@@ -1037,6 +1037,14 @@ config DRM_PANEL_Q20_HD720_LCM_DSI_VDO
 	help
 	  Say Y here if you want to enable support q20 lcm common panel
 	  
+config DRM_PANEL_Q30_HD1440_LCM_DSI_VDO
+	tristate "q30 lcm common panel video"
+	depends on OF
+	depends on DRM_MIPI_DSI
+	depends on BACKLIGHT_CLASS_DEVICE
+	help
+	  Say Y here if you want to enable support q30 lcm common panel
+	  
 config DRM_MEDIATEK_PANEL
 	tristate "drm panel common driver"
 	depends on OF
