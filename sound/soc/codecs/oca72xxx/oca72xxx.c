@@ -277,6 +277,13 @@ char *oca72xxx_show_current_profile(int dev_index)
 }
 EXPORT_SYMBOL(oca72xxx_show_current_profile);
 
+int oca72xxx_get_dev_count(void)
+{
+	printk("oca72xxx_get_dev_count g_oca72xxx_dev_cnt= [%d]",g_oca72xxx_dev_cnt);
+	return g_oca72xxx_dev_cnt;
+}
+EXPORT_SYMBOL(oca72xxx_get_dev_count);
+
 int oca72xxx_set_profile(int dev_index, char *profile)
 {
 	struct list_head *pos = NULL;
