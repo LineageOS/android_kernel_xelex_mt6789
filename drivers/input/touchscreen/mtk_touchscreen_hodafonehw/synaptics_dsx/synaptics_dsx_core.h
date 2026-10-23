@@ -296,29 +296,6 @@ struct synaptics_f51_extra_wakeup_info {
 };
 
 /*
- * One Euro Filter state for a single axis.
- * This adaptive low-pass filter reduces jitter during slow movements while
- * maintaining responsiveness during fast movements. Uses fixed-point math
- * since floating-point is not available in kernel space.
- */
-struct one_euro_filter_state {
-	int filtered;		/* Last filtered value (scaled by FILTER_PRECISION_SCALE) */
-	int derivative;		/* Derivative estimate (scaled) */
-	s64 timestamp_ns;	/* Timestamp of last sample in nanoseconds */
-	int last_reported;	/* Last reported value (unscaled) for deadzone */
-	bool initialized;	/* Filter has received at least one sample */
-};
-
-/*
- * Per-finger filter state containing X and Y axis filters.
- * Each tracked finger maintains independent filter state.
- */
-struct finger_filter_state {
-	struct one_euro_filter_state x;
-	struct one_euro_filter_state y;
-};
-
-/*
  * struct synaptics_rmi4_data - rmi4 device instance data
  * @pdev: pointer to platform device
  * @input_dev: pointer to associated input device
@@ -398,9 +375,10 @@ struct synaptics_rmi4_data {
 
 	struct work_struct irq_work;
 	bool   ignore_touch;
-
-	/* One Euro Filter state for each finger to reduce touch jitter */
-	struct finger_filter_state finger_filter[F12_FINGERS_TO_SUPPORT];
+	/* slots reported as down in the previous F12 interrupt;
+	 * used to send the missing up event when a lifted finger
+	 * was the highest active slot */
+	unsigned long f12_active_slots;
 };
 
 struct synaptics_dsx_bus_access {
