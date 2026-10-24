@@ -30,7 +30,11 @@
  * This works for all backlight control methods (PWM, I2C, Display, etc.)
  * Set to 0 to disable delay feature
  */
+#ifdef CONFIG_DRM_PANEL_Q30_HD1440_LCM_DSI_VDO
 #define WAKEUP_BACKLIGHT_DELAY_MS  200
+#else
+#define WAKEUP_BACKLIGHT_DELAY_MS  0
+#endif
 
 static int mtk_set_brightness(struct led_classdev *led_cdev,
 					 enum led_brightness brightness);
