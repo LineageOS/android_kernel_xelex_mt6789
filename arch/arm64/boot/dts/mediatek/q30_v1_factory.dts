@@ -39,19 +39,24 @@
 			gpios = <&pio 46 0>;
 			power_off_charge,label = "red1";
 			linux,default-trigger = "battery_red";
-			default-state = "keep";
+			default-state = "off";
+			retain-state-suspended;
 		};
 		green {
 			label = "green";
 			gpios = <&pio 48 0>;
-			default-state = "keep";
+			default-state = "off";
 			power_off_charge,label = "green1";
 			linux,default-trigger = "battery_green";
+			retain-state-suspended;
 		};
 		blue {
 			label = "blue";
 			gpios = <&pio 49 0>;
 			default-state = "off";
+			power_off_charge,label = "blue1";
+			linux,default-trigger = "battery_blue";
+			retain-state-suspended;
 		};
 	};
 	
