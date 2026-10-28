@@ -910,7 +910,7 @@ static int aw95016_key_feature_init(struct aw95016 *aw95016)
 
 	if (gpio_is_valid(aw95016->kb_blk_gpio)) {
 		int led_ret;
-		aw95016->kb_led_cdev.name = "i2c::kbd_backlight";
+		aw95016->kb_led_cdev.name = "keyboard-backlight";
 		aw95016->kb_led_cdev.default_trigger = "kbd-backlight";
 		aw95016->kb_led_cdev.brightness_set = aw95016_kb_brightness_set;
 		aw95016->kb_led_cdev.max_brightness = 255;
