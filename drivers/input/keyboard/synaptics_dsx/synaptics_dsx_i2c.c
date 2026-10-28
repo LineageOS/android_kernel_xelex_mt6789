@@ -129,6 +129,16 @@ static int parse_dt(struct device *dev, struct synaptics_dsx_board_data *bdata)
 
 	bdata->y_flip = of_property_read_bool(np, "synaptics,y-flip");
 
+	if (of_find_property(np, "synaptics,max-y-for-2d", NULL)) {
+		retval = of_property_read_u32(np, "synaptics,max-y-for-2d",
+				&value);
+		if (retval < 0)
+			return retval;
+		bdata->max_y_for_2d = value;
+	} else {
+		bdata->max_y_for_2d = -1;
+	}
+
 	of_property_read_string(np, "synaptics,input-device-name",
 				&bdata->input_dev_name);
 
