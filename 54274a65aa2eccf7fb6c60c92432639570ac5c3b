@@ -46,6 +46,30 @@
       },
       "revId": "54274a65aa2eccf7fb6c60c92432639570ac5c3b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52b1b598_18206a01",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 32620
+      },
+      "writtenOn": "2026-11-14T15:34:44Z",
+      "side": 1,
+      "message": "Indeed. I would have done that if I\u0027d known it was an MTK fuckup and not Amazon\u0027s lol",
+      "parentUuid": "950c7616_627c64f1",
+      "range": {
+        "startLine": 9,
+        "startChar": 19,
+        "endLine": 9,
+        "endChar": 27
+      },
+      "revId": "54274a65aa2eccf7fb6c60c92432639570ac5c3b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
